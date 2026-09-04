@@ -87,11 +87,17 @@ if __name__ == "__main__":
     save_market_data(df)
 
     from src.processing.save import load_saved_market_data
-    from src.analytics.returns import compute_log_returns, correlation_matrix
+    from src.analytics.returns import (
+                    compute_log_returns, correlation_matrix, 
+                    compute_simple_returns, compute_zscores, compute_drawdown
+                    )
     from src.processing.validate import print_validation_report
 
     saved_df = load_saved_market_data()
     log_returns = compute_log_returns(saved_df)
+    simple_returns = compute_simple_returns(saved_df)
+    zscores = compute_zscores(log_returns)
+    drawdowns = compute_drawdown(saved_df)
     
     print(df.tail())
     print(f"\nShape: {df.shape}")
@@ -101,6 +107,17 @@ if __name__ == "__main__":
     print(correlation_matrix(log_returns))
 
     print_validation_report(saved_df)
+
+    print("\nSimple returns (last 5 days):")
+    print(simple_returns.tail())
+    
+    print("\nZ-scores (last 5 days):")
+    print(zscores.tail())
+    
+    print("\nDrawdowns (last 5 days):")
+    print(drawdowns.tail())
+
+    
     
 
     

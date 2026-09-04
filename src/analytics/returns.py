@@ -47,3 +47,32 @@ def correlation_matrix(returns: pd.DataFrame) -> pd.DataFrame:
     snapshot, not the full time-varying picture.
     """
     return returns.corr()
+
+def compute_simple_returns(prices: pd.DataFrame) -> pd.DataFrame:
+    """
+    Plain percentage returns: (price[t] - price[t-1]) / price[t-1]
+
+    More intuitive to read/report than log returns, but doesn't stack
+    across days as cleanly — kept alongside log returns, not instead of.
+    """
+    return prices.pct_change().dropna()
+
+
+def compute_zscores(returns: pd.DataFrame, window: int = 30) -> pd.DataFrame:
+    """
+    Rolling z-score of each day's return: how many standard deviations
+    away from its own trailing-window average was that day's move?
+    """
+    rolling_mean = returns.rolling(window=window).mean()
+    rolling_std = returns.rolling(window=window).std()
+    return (returns - rolling_mean) / rolling_std
+
+
+def compute_drawdown(prices: pd.DataFrame) -> pd.DataFrame:
+    """
+    Percentage drop from each asset's running peak price so far.
+    0 means "at an all-time high right now." -0.30 means "30% below
+    the highest price seen up to this point."
+    """
+    running_max = prices.cummax()
+    return (prices - running_max) / running_max
