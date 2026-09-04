@@ -88,12 +88,19 @@ if __name__ == "__main__":
 
     from src.processing.save import load_saved_market_data
     from src.analytics.returns import compute_log_returns, correlation_matrix
+    from src.processing.validate import print_validation_report
 
     saved_df = load_saved_market_data()
     log_returns = compute_log_returns(saved_df)
-    print("\nCorrelation Matrix: ")
-    print(correlation_matrix(log_returns))
     
     print(df.tail())
     print(f"\nShape: {df.shape}")
     print(f"Date range: {df.index.min()} to {df.index.max()}")
+
+    print("\nCorrelation Matrix: ")
+    print(correlation_matrix(log_returns))
+
+    print_validation_report(saved_df)
+    
+
+    
