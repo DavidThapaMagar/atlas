@@ -81,8 +81,10 @@ if __name__ == "__main__":
 
     sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
     from config.assets import ASSETS, DEFAULT_START
+    from src.processing.save import save_market_data
 
     df = load_market_data(ASSETS, DEFAULT_START)
+    save_market_data(df)
     print(df.tail())
     print(f"\nShape: {df.shape}")
     print(f"Date range: {df.index.min()} to {df.index.max()}")
