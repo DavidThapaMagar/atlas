@@ -85,6 +85,15 @@ if __name__ == "__main__":
 
     df = load_market_data(ASSETS, DEFAULT_START)
     save_market_data(df)
+
+    from src.processing.save import load_saved_market_data
+    from src.analytics.returns import compute_log_returns, correlation_matrix
+
+    saved_df = load_saved_market_data()
+    log_returns = compute_log_returns(saved_df)
+    print("\nCorrelation Matrix: ")
+    print(correlation_matrix(log_returns))
+    
     print(df.tail())
     print(f"\nShape: {df.shape}")
     print(f"Date range: {df.index.min()} to {df.index.max()}")
