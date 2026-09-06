@@ -93,6 +93,7 @@ if __name__ == "__main__":
                     compute_rolling_volatility, compute_rolling_correlation
                     )
     from src.processing.validate import print_validation_report
+    from src.visualization.plots import plot_rolling_correlation
 
     saved_df = load_saved_market_data()
     log_returns = compute_log_returns(saved_df)
@@ -125,7 +126,7 @@ if __name__ == "__main__":
     
     print("\nBTC-QQQ rolling correlation (last 10 days):")
     print(btc_qqq_corr.tail(10))
-
+    plot_rolling_correlation(btc_qqq_corr, "BTC", "QQQ", save_path="data/btc_qqq_correlation.png")
     
     
 
