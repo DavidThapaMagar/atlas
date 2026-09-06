@@ -89,7 +89,8 @@ if __name__ == "__main__":
     from src.processing.save import load_saved_market_data
     from src.analytics.returns import (
                     compute_log_returns, correlation_matrix, 
-                    compute_simple_returns, compute_zscores, compute_drawdown
+                    compute_simple_returns, compute_zscores, compute_drawdown,
+                    compute_rolling_volatility, compute_rolling_correlation
                     )
     from src.processing.validate import print_validation_report
 
@@ -98,6 +99,8 @@ if __name__ == "__main__":
     simple_returns = compute_simple_returns(saved_df)
     zscores = compute_zscores(log_returns)
     drawdowns = compute_drawdown(saved_df)
+    volatility = compute_rolling_volatility(log_returns)
+    btc_qqq_corr = compute_rolling_correlation(log_returns, "BTC", "QQQ")
     
     print(df.tail())
     print(f"\nShape: {df.shape}")
@@ -116,6 +119,12 @@ if __name__ == "__main__":
     
     print("\nDrawdowns (last 5 days):")
     print(drawdowns.tail())
+
+    print("\nRolling volatility (last 5 days):")
+    print(volatility.tail())
+    
+    print("\nBTC-QQQ rolling correlation (last 10 days):")
+    print(btc_qqq_corr.tail(10))
 
     
     
