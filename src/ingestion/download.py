@@ -94,6 +94,8 @@ if __name__ == "__main__":
                     )
     from src.processing.validate import print_validation_report
     from src.visualization.plots import plot_rolling_correlation
+    from src.analytics.leadlag import lagged_correlation, lagged_correlation_with_significance
+    from src.ingestion.intraday import load_intraday_pair
 
     saved_df = load_saved_market_data()
     log_returns = compute_log_returns(saved_df)
@@ -127,6 +129,33 @@ if __name__ == "__main__":
     print("\nBTC-QQQ rolling correlation (last 10 days):")
     print(btc_qqq_corr.tail(10))
     plot_rolling_correlation(btc_qqq_corr, "BTC", "QQQ", save_path="data/btc_qqq_correlation.png")
+
+    qqq_leads_btc = lagged_correlation(log_returns, leader="QQQ", follower="BTC", max_lag=5)
+    print("\nQQQ (lagged) vs BTC (today) correlation by lag:")
+    print(qqq_leads_btc)
+
+    btc_leads_qqq = lagged_correlation(log_returns, leader="BTC", follower="QQQ", max_lag=5)
+    print("\nBTC (lagged) vs QQQ (today) correlation by lag:")
+    print(btc_leads_qqq)
+
+    intraday_data = load_intraday_pair("BTC-USD", "QQQ")
+    print("\nIntraday data (last 5 rows):")
+    print(intraday_data.tail())
+    print(f"\nIntraday shape: {intraday_data.shape}")
+
+    intraday_returns = compute_log_returns(intraday_data)
+    
+    qqq_leads_btc_intraday = lagged_correlation(intraday_returns, leader="QQQ", follower="BTC-USD", max_lag=10)
+    print("\nQQQ (lagged by minutes) vs BTC (this minute) correlation:")
+    print(qqq_leads_btc_intraday)
+    
+    btc_leads_qqq_intraday = lagged_correlation(intraday_returns, leader="BTC-USD", follower="QQQ", max_lag=10)
+    print("\nBTC (lagged by minutes) vs QQQ (this minute) correlation:")
+    print(btc_leads_qqq_intraday)
+
+    btc_leads_qqq_sig = lagged_correlation_with_significance(intraday_returns, leader="BTC-USD", follower="QQQ", max_lag=10)
+    print("\nBTC leading QQQ — correlation + significance by lag:")
+    print(btc_leads_qqq_sig)
     
     
 
