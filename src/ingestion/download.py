@@ -94,8 +94,9 @@ if __name__ == "__main__":
                     )
     from src.processing.validate import print_validation_report
     from src.visualization.plots import plot_rolling_correlation
-    from src.analytics.leadlag import lagged_correlation, lagged_correlation_with_significance
+    from src.analytics.leadlag import lagged_correlation, lagged_correlation_with_significance, split_half_validation
     from src.ingestion.intraday import load_intraday_pair
+    
 
     saved_df = load_saved_market_data()
     log_returns = compute_log_returns(saved_df)
@@ -156,7 +157,10 @@ if __name__ == "__main__":
     btc_leads_qqq_sig = lagged_correlation_with_significance(intraday_returns, leader="BTC-USD", follower="QQQ", max_lag=10)
     print("\nBTC leading QQQ — correlation + significance by lag:")
     print(btc_leads_qqq_sig)
-    
+
+    lag9_validation = split_half_validation(intraday_returns, leader="BTC-USD", follower="QQQ", lag=9)
+    print("\nLag-9 split-half validation:")
+    print(lag9_validation)
     
 
     

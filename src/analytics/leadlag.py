@@ -56,3 +56,22 @@ def lagged_correlation_with_significance(returns: pd.DataFrame, leader: str, fol
         results.append({"lag": lag, "correlation": corr, "p_value": p_value, "significant": p_value < 0.05})
         
     return pd.DataFrame(results).set_index("lag")
+
+def split_half_validation(returns: pd.DataFrame, leader: str, follower: str, lag: int) -> dict:
+    """
+    Check whether a specific lag's correlation holds up in both the
+    first and second half of the data, independently. A real pattern
+    should show up in both halves; a fluke usually won't.
+    """
+    midpoint = len(returns) // 2
+    first_half = returns.iloc[:midpoint]
+    second_half = returns.iloc[midpoint:]
+
+    results = {}
+    for label, half in [("first_half", first_half), ("second_half", second_half)]:
+        shifted_leader = half[leader].shift(lag)
+        paired = pd.concat([shifted_leader, half[follower]], axis=1).dropna()
+        corr, p_value = pearsonr(paired.iloc[:, 0], paired.iloc[:, 1])
+        results[label] = {"correlation": corr, "p_value": p_value, "significant": p_value < 0.05, "n": len(paired)}
+
+    return results
